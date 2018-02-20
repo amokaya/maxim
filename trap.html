@@ -1,0 +1,136 @@
+<!doctype html>
+
+<!-- 	Realtime Toilet demo using publish/subscribe platform 	-->
+<!-- 	Neon realtime graphs 					-->
+<!-- 								-->
+
+<html lang='en'>
+
+<head>
+<meta charset='UTF-8'>
+
+<!-- Using SimpleGrid ... following ensures mobile device scaling -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- grab neon css -->
+<link type='text/css' rel='stylesheet' href='//pubnub.github.io/eon/v/eon/0.0.10/eon.css'>
+<!-- grab some basic css to prettify basics -->
+<link type='text/css' rel='stylesheet' href='styles.css'>
+<!-- grab simplegrid css -->
+<link type='text/css' rel='stylesheet' href='simplegrid.css'>
+<!-- grab neon JS -->
+<script type='text/javascript' src='//pubnub.github.io/eon/v/eon/0.0.10/eon.js'></script>
+
+<title>Realtime Toilet Dashboard</title>
+</head>
+
+<body>
+
+<header>
+
+<!--- grid layout -->
+<div class="grid grid-pad">
+    <div class="features">
+	<h1>Realtime Operational Dashboard</h1>
+<p>When you need to dash, check the Dash&#8482;
+    </div>
+    <div class="col-1-2 icon-box">
+       <div class="content">
+          29F Operational Centre
+ 		<div id="nine"></div>
+       </div>
+    </div>
+    <div class="col-1-2 icon-box">
+       <div class="content">
+          30F Operational Centre
+  		<div id="ten"></div> 
+       </div>
+    </div>
+
+</div>
+
+
+<!-- Use pubnub demo channels for data  -->
+
+<script>
+      var pubnub = PUBNUB.init({
+        publish_key: 'pub-c-923938f1-a4c1-4253-b15a-9c24087904c9',
+        subscribe_key: 'sub-c-bd9ab0d6-6e02-11e5-8d3b-0619f8945a4f'
+      });
+      var channel1 = "combo-dump" + Math.random();
+      eon.chart({
+        pubnub: pubnub,
+        channel: channel1,
+        history: true,
+        debug: true,
+        generate: {
+          bindto: '#nine',
+          data: {
+            labels: true,
+            type: 'bar'
+          },
+          bar: {
+            width: {
+              ratio: 1
+            }
+          }
+        }
+      });
+</script>
+<script>
+      setInterval(function(){
+        pubnub.publish({
+          channel: channel1,
+          message: {
+            eon: {
+              'Trap 1': Math.round(Math.random() * 1),
+              'Trap 2': Math.round(Math.random() * 1),
+              'Trap 3': Math.round(Math.random() * 1),
+              'Trap 4': Math.round(Math.random() * 1),
+              'Trap 5': Math.round(Math.random() * 1),
+              'Trap 6': Math.round(Math.random() * 1)
+            }
+          }
+        });
+      }, 4000);
+</script>
+<script>
+      var channel = "combo-dump30" + Math.random();
+      eon.chart({
+        pubnub: pubnub,
+        channel: channel,
+        history: true,
+        debug: true,
+        generate: {
+          bindto: '#ten',
+          data: {
+            labels: true,
+            type: 'bar'
+          },
+          bar: {
+            width: {
+              ratio: 1
+            }
+          }
+        }
+      });
+</script>
+<script>
+      setInterval(function(){
+        pubnub.publish({
+          channel: channel,
+          message: {
+            eon: {
+              'Trap 1': Math.round(Math.random() * 1),
+              'Trap 2': Math.round(Math.random() * 1),
+              'Trap 3': Math.round(Math.random() * 1),
+              'Trap 4': Math.round(Math.random() * 1),
+              'Trap 5': Math.round(Math.random() * 1),
+              'Trap 6': Math.round(Math.random() * 1)
+            }
+          }
+        });
+      }, 2900);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+AuthType Basic
+AuthName "Protected Area"
+AuthUserFile /usr/home/amokaya/public_html/.sec/.htpasswd2
+Require valid-user
+ErrorDocument 401 /unauthorized.html

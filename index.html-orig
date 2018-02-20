@@ -1,0 +1,198 @@
+<!doctype html>
+
+<!-- 	Internet of Things using publish/subscribe platform 	-->
+<!-- 	- Realtime graphs 					-->
+<!-- 	- Data are random for demonstration only 		-->
+<!-- 								-->
+<!-- 	(c)amokaya LLC 2017 / Paul Marshall 			-->
+<!-- 								-->
+
+<html lang='en'>
+
+<head>
+<meta charset='UTF-8'>
+<!-- grab neon css -->
+<link type='text/css' rel='stylesheet' href='//pubnub.github.io/eon/v/eon/0.0.10/eon.css'>
+<!-- grab neon JS -->
+<script type='text/javascript' src='//pubnub.github.io/eon/v/eon/0.0.10/eon.js'></script>
+<title>MAXiM IoT Demo</title>
+<!-- grab amokaya corporate css to prettify basics -->
+<link type='text/css' rel='stylesheet' href='amokaya_style.css'>
+</head>
+
+<body>
+
+<header>
+
+	<h1>MAXiM IoT Elektron Demo</h1>
+<p>Data updates in real time - witness the X-axis timestamps
+<h3>Give it a moment to load data</h3>
+
+<!--- grid layout -->
+<div class="grid-container">
+
+ <div class="row">
+    <div class="col-5">
+    contributed data source 1
+	<div id="combo"></div>
+    </div>
+ </div>
+
+ <div class="row">
+    <div class="col-2">
+    contributed data source 2
+	<div id="market"></div>
+    </div>
+
+    <div class="col-2">
+    contributed data source 3
+	<div id="credit"></div>
+    </div>
+
+    <div class="col-1">
+    contributed data source 4
+	<div id="speedo"></div>
+    </div>
+ </div>
+
+</div>
+
+<!--- for BU unit risk, open channel for some random data --->
+
+<script>
+      var pubnub = PUBNUB.init({
+        publish_key: 'pub-c-923938f1-a4c1-4253-b15a-9c24087904c9',
+        subscribe_key: 'sub-c-bd9ab0d6-6e02-11e5-8d3b-0619f8945a4f'
+      });
+      var channel1 = "combo-risk" + Math.random();
+      var channel2 = "market-risk" + Math.random();
+      var channel3 = "credit-risk" + Math.random();
+      var channel4 = "firmwide-risk" + Math.random();
+
+      eon.chart({
+        pubnub: pubnub,
+        channel: channel1,
+        history: false,
+        debug: true,
+        generate: {
+          bindto: '#combo',
+          data: {
+            labels: true,
+//            type: 'bar'
+          },
+          bar: {
+            width: {
+              ratio: 0.5
+            }
+          }
+        }
+      });
+
+      eon.chart({
+        pubnub: pubnub,
+        channel: channel2,
+        history: false,
+        debug: true,
+        generate: {
+          bindto: '#market',
+          data: {
+            labels: true,
+            type: 'bar'
+          },
+          bar: {
+            width: {
+              ratio: 0.5
+            }
+          }
+        }
+      });
+
+      eon.chart({
+        pubnub: pubnub,
+        channel: channel3,
+        history: false,
+        debug: true,
+        generate: {
+          bindto: '#credit',
+          data: {
+            labels: true,
+            type: 'bar'
+          },
+          bar: {
+            width: {
+              ratio: 0.5
+            }
+          }
+	}
+      });
+
+      eon.chart({
+    	pubnub: pubnub,
+    	channel: channel4,
+        history: false,
+        debug: true,
+    	generate: {
+      	  bindto: '#speedo',
+      	  data: {
+        	type:'gauge'
+      	  },
+    	}
+  });
+
+</script>
+
+<!--- for BU unit risk, publish that random data --->
+
+<script>
+      setInterval(function(){
+        pubnub.publish({
+          channel: channel1,
+          message: {
+            eon: {
+              'IoT 1': Math.floor(Math.random() * 50),
+              'IoT 2': Math.floor(Math.random() * 80),
+              'IoT 3': Math.floor(35+Math.random() * 120),
+              'IoT4': Math.floor(Math.random() * 25)
+            }
+          }
+        });
+      }, 1500);
+</script>
+<script>
+      setInterval(function(){
+        pubnub.publish({
+          channel: channel2,
+          message: {
+            eon: {
+              'Source 2': Math.floor(Math.random() * 50)
+            }
+          }
+        });
+      }, 1000);
+</script>
+<script>
+      setInterval(function(){
+        pubnub.publish({
+          channel: channel3,
+          message: {
+            eon: {
+              'Source 3': Math.floor(Math.random() * 100)
+            }
+          }
+        });
+      }, 3000);
+</script>
+<script>
+      setInterval(function(){
+        pubnub.publish({
+          channel: channel4,
+          message: {
+            eon: {
+              'Firmwide Risk': Math.floor(Math.random() * 100)
+            }
+          }
+        });
+      }, 1800);
+</script>
+</body>
+</html>

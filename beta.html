@@ -1,0 +1,96 @@
+<!doctype html>
+
+<!-- 	Realtime Risk demo using publish/subscribe platform 	-->
+<!-- 								-->
+<!-- 	(c)amokaya LLC 2016 / Paul Marshall 			-->
+
+<html lang='en'>
+
+<head>
+	<meta charset='UTF-8'>
+	<!-- amokaya css -->
+	<link type='text/css' rel='stylesheet' href='amokaya_style_beta.css'>
+	<!-- responsive css -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- eon css -->
+	<link type='text/css' rel='stylesheet' href='//pubnub.github.io/eon/v/eon/0.0.10/eon.css'>
+	<!-- eon JS -->
+	<script type='text/javascript' src='//pubnub.github.io/eon/v/eon/0.0.10/eon.js'></script>
+	<!-- pubnub JS -->
+	<script src="http://cdn.pubnub.com/pubnub-3.14.5.min.js"></script>
+	<!-- google chart JS -->
+	<script type="text/javascript" src="//www.gstatic.com/charts/loader.js"></script>
+	<!-- amokaya chart JS -->
+	<script type="text/javascript" src="amokaya_chart.js"></script>
+	<title>Realtime Data Dashboard</title>
+</head>
+
+<body>
+<div class="page">
+	<!--- grid layout -->
+	<div class="grid-container">
+ 	<div class="row rowbox">
+    		<div class="col-6">
+        	<h1>Realtime Data Demo</h1>
+        	<p>Data updates in real time. Mouse over or touch graph to grab. Click a legend to switch</p>
+        	<h3>Allow it a moment to load data</h3>
+		</div>
+	</div>
+
+	 <div class="row rowbox">
+    		<div class="col-4">
+   		<p>BU Realtime Risk Level (%Risk Tolerance)</p>
+		<div id="combo"></div>
+		<h3>Eq Derivatives running a relatively high risk. If we're being paid appropriately for this, it's fine. If not, consider reallocating </h3>
+    		</div>
+
+    		<div class="col-1">
+   		<p>BU (Relative Risk)</p>
+		<div id="combo-donut"></div>
+		<h3>Used to show where risk capital is deployed </h3>
+    		</div>
+ 	 </div>
+
+ 	 <div class="row rowbox">
+    		<div class="col-6">
+		<p>Geographic Risk Map</p>
+		<div id="chart_div" style="width: 98%; height: 100px;"></div>
+		<h3>Click to drill down, right click to drill up </h3>
+		</div>
+	 </div>
+
+ 	 <div class="row rowbox">
+    		<div class="col-2">
+    		<p>Operations</p>
+		<div id="operations"></div>
+		<h3>Operational risk is less volatile than market risk but still needs to be monitored</h3>
+    		</div>
+
+    		<div class="col-2">
+    		<p>Markets</p>
+		<div id="markets"></div>
+		<h3>Highly dynamic market risk</h3>
+    		</div>
+
+    		<div class="col-1">
+    		<p>Firmwide Realtime Risk</p>
+		<div id="speedo"></div>
+		<h3>A measure of overall, consolidated, firmwide risk in real time</h3><br><p>
+		<h3>Required for BCBS239 Compliance. </h3>
+    		</div>
+ 	 </div>
+ 	 <div class="row rowbox">
+    		<div class="col-6">
+		<h3><a href="http://amokaya.com">(c)2016 amokaya LLC</a></h3>
+		</div>
+	 </div>
+	</div>
+	<!--- end grid layout -->
+</div>
+<!--- open channels for some random data --->
+<script type='text/javascript' src='amokaya_sub.js'></script>
+
+<!--- publish random data --->
+<script type='text/javascript' src='amokaya_pub.js'></script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+
+<!-- 	Internet of Things using publish/subscribe platform 	-->
+<!-- 	- Realtime graphs 					-->
+<!-- 	- Data are random for demonstration only 		-->
+<!-- 								-->
+<!-- 	(c)amokaya LLC 2017 / Paul Marshall 			-->
+<!-- 								-->
+
+<html lang='en'>
+
+<head>
+<meta charset='UTF-8'>
+<!-- grab neon css -->
+<link type='text/css' rel='stylesheet' href='//pubnub.github.io/eon/v/eon/0.0.10/eon.css'>
+<!-- grab neon JS -->
+<script type='text/javascript' src='//pubnub.github.io/eon/v/eon/0.0.10/eon.js'></script>
+<title>MAXiM IoT Demo</title>
+<!-- grab amokaya corporate css to prettify basics -->
+<link type='text/css' rel='stylesheet' href='amokaya_style.css'>
+</head>
+
+<body>
+<div class="page">
+<!--- grid layout -->
+<div class="grid-container">
+  <div class="row rowbox">
+ <div class="row">
+    <div class="col-5">
+     <h1>MAXiM IoT using Elektron Data Platform</h1>
+     <h3>Let's think of a single example</h3>
+     <h3>Imagine there is an internet connected "thing"... a sensor, a fridge, a car, a widget in a factory, a watch, an agricultural tool, anything... and it is outputting data. Measurements of something useful.</h3>
+    <h3>Maybe it is a tractor, harvesting a field:</h3>
+    </div>
+ </div>
+ <div class="row">
+    <div class="col-5">
+    <img src="tractor.jpg" width="80%">
+<h3>
+Every second it records how many turnips it has collected...
+</h3>
+    </div>
+ </div>
+<!--- grid layout -->
+<div class="grid-container">
+ <div class="row">
+    <div class="col-5">
+    Turnips Harvested - One Farmer
+	<div id="turnip"></div>
+    </div>
+ </div>
+</div>
+ <div class="row">
+    <div class="col-5">
+<h3>
+You can see the timestamps on the X-axis, and the number of turnips harvested on the Y-axis.
+</h3>
+<h3>
+By itself, not so interesting. Just note that the data above are being generated in real-time as you look at this page, just as the tractor might be outputting its data as it harvests the field.
+</h3>
+<p>
+ <div class="row rowbox">
+   <div class="row">
+    <div class="col-5">
+     <h3><a href="#" onclick="history.back();">Back</a> | <a href="page2.html">Next Page>>></a></h3>
+    </div>
+   </div>
+ </div>
+
+<!--- for turnips, open channel for some random data --->
+
+<script>
+      var pubnub = PUBNUB.init({
+        publish_key: 'pub-c-923938f1-a4c1-4253-b15a-9c24087904c9',
+        subscribe_key: 'sub-c-bd9ab0d6-6e02-11e5-8d3b-0619f8945a4f'
+      });
+      var channel1 = "turnip" + Math.random();
+
+      eon.chart({
+        pubnub: pubnub,
+        channel: channel1,
+        history: false,
+        debug: true,
+        generate: {
+          bindto: '#turnip',
+          data: {
+            labels: true,
+//            type: 'bar'
+          },
+          bar: {
+            width: {
+              ratio: 0.5
+            }
+          }
+        }
+      });
+//
+
+</script>
+
+<!--- for BU unit risk, publish that random data --->
+
+<script>
+      setInterval(function(){
+        pubnub.publish({
+          channel: channel1,
+          message: {
+            eon: {
+              'Farmer 1': Math.floor(Math.random() * 50),
+            }
+          }
+        });
+      }, 1500);
+</script>
+</body>
+</html>

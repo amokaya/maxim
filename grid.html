@@ -1,0 +1,233 @@
+<!doctype html>
+
+<!-- 	Realtime Risk demo using publish/subscribe platform 	-->
+<!-- 	Neon realtime graphs 					-->
+<!-- 	Data are false, taken from pubnub demo channels 	-->
+<!-- 								-->
+<!-- 	(c) amokaya LLC 2016 / Paul Marshall 			-->
+<!-- 								-->
+
+<html lang='en'>
+
+<head>
+<meta charset='UTF-8'>
+
+<!-- Using SimpleGrid ... following ensures mobile device scaling -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- grab neon css -->
+<link type='text/css' rel='stylesheet' href='//pubnub.github.io/eon/v/eon/0.0.10/eon.css'>
+<!-- grab some basic css to prettify basics -->
+<link type='text/css' rel='stylesheet' href='styles.css'>
+<!-- grab simplegrid css -->
+<link type='text/css' rel='stylesheet' href='simplegrid.css'>
+<!-- grab neon JS -->
+<script type='text/javascript' src='//pubnub.github.io/eon/v/eon/0.0.10/eon.js'></script>
+
+<title>Realtime Data Dashboard</title>
+</head>
+
+<body>
+
+<header>
+<img src="optinewsbanner.png" border=0>
+
+<!--- grid layout -->
+<div class="grid grid-pad">
+    <div class="features">
+	<h1>Realtime Data Demo</h1>
+<h2>Give it a moment to load data</h2>
+Data updates in real time, witness the X-axis timestamps
+Mouse over or touch for data. All data are random. 
+    </div>
+    <div class="col-1-2 icon-box">
+       <div class="content">
+           Market Risk
+ 		<div id="market"></div>
+       </div>
+    </div>
+    <div class="col-1-2 icon-box">
+       <div class="content">
+           Credit Risk
+  		<div id="credit"></div> 
+       </div>
+    </div>
+
+    <div class="col-1-1">
+       <div class="content">
+           BU Risk Level
+  		<div id="combo"></div>
+       </div>
+    </div>
+    <div class="col-1-1">
+       <div class="content">
+           Firmwide Realtime Risk Level
+  		<div id="speedo"></div>
+       </div>
+    </div>
+</div>
+
+
+<!-- Use pubnub demo channels for data  -->
+
+<script type='text/javascript'>
+  var pubnub = PUBNUB.init({
+    subscribe_key : "sub-c-d784e128-da7d-11e5-9511-0619f8945a4f"
+  });
+
+  var channel = 'fake-temperature-photoresistor';
+
+//Eon charting using data taken from pubnub channel in realtime 
+
+  eon.chart({
+    channel: channel,
+    generate: {
+      bindto: '#market',
+      data: {
+        type: 'line'
+      },
+      axis: {
+        x: {
+          type: 'timeseries',
+          tick: {
+            format: '%m:%S',
+            fit: true
+          },
+          label: {
+            text: 'Realtime'
+          }
+        },
+        y: {
+          label: {
+            text: 'US Dollars',
+            position: 'outer-middle'
+          },
+          tick: {
+            format: function (d) {
+              var df = Number( d3.format('.1f')(d) );
+              return df;
+            }
+          }
+        }
+      }
+    },
+    pubnub: pubnub,
+    limit: 30,
+    transform: function(m) {
+      return { eon: {
+        "Credit Risk": m.eon.light
+      }}
+    }
+  });
+
+  eon.chart({
+    channel: channel,
+    generate: {
+      bindto: '#credit',
+      data: {
+        type: 'line',
+        colors: {
+          temperature: 'deeppink'
+        }
+      },
+      axis: {
+        x: {
+          type: 'timeseries',
+          tick: {
+            format: '%m:%S',
+            fit: true
+          },
+          label: {
+            text: 'Realtime',
+          }
+        },
+        y: {
+          label: {
+            text: 'US Dollars',
+            position: 'outer-middle'
+          },
+          tick: {
+            format: function (d) {
+              var df = Number( d3.format('.2f')(d) );
+              return df;
+            }
+          }
+        }
+      }
+    },
+    pubnub: pubnub,
+    limit: 30,
+    transform: function(m) {
+      return { eon: {
+        "Market Risk": m.eon.temperature
+      }}
+    }
+  });
+  eon.chart({
+    channel: 'fake-potentiometer',
+    generate: {
+      bindto: '#speedo',
+      data: {
+        type:'gauge'
+      },
+      gauge: {
+        label:{
+          format: function(value, ratio){
+            return value; //returning here the value, not in %
+          },
+        },
+        min: 0,
+        max: 1200
+      },
+      color: {
+        pattern: ['#FF0000', '#F6C600', '#60B044'],
+        threshold: {
+          values: [341, 682]
+        }
+      }
+    },
+    pubnub: pubnub
+  });
+
+</script>
+<script>
+      var pubnub = PUBNUB.init({
+        publish_key: 'pub-c-923938f1-a4c1-4253-b15a-9c24087904c9',
+        subscribe_key: 'sub-c-bd9ab0d6-6e02-11e5-8d3b-0619f8945a4f'
+      });
+      var channel = "combo-risk" + Math.random();
+      eon.chart({
+        pubnub: pubnub,
+        channel: channel,
+        history: true,
+        debug: true,
+        generate: {
+          bindto: '#combo',
+          data: {
+            labels: true,
+            type: 'bar'
+          },
+          bar: {
+            width: {
+              ratio: 0.5
+            }
+          }
+        }
+      });
+    </script>
+    <script>
+      setInterval(function(){
+        pubnub.publish({
+          channel: channel,
+          message: {
+            eon: {
+              'Fixed Income': Math.floor(Math.random() * 99),
+              'Equities': Math.floor(Math.random() * 99),
+              'Equities Derivatives': Math.floor(Math.random() * 200),
+              'FX': Math.floor(Math.random() * 99)
+            }
+          }
+        });
+      }, 700);
+    </script>
+</body>
+</html>
